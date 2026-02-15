@@ -5,6 +5,16 @@
 #include <fstream>
 #include <sstream>
 
+//Structure to contain the information 
+
+struct course_information
+{
+    double course_mark;
+    double course_module_tag;
+    double course_year;
+    std::string course_module_name;
+};
+
 ///Function to calculate mean, std, variance, maybe a skibidy graph
 
 void exam_statistics_calculator()
@@ -23,50 +33,40 @@ void placeholder_function_name_1()
     //Read in a file and create arrays containing the file's parameters
 
     std::ifstream file("C:\\Users\\lexma\\projects\\assignment2\\course_marks.dat");
-    std::string data;
+    std::string line;
 
-    std::vector<double> course_mark;
-    std::vector<double> course_module_tag;
-    std::vector<double> course_year;
-    std::vector<std::string> course_module_name;
+    std::vector<course_information> courses;
 
     //While loop that reads in data
 
-    while(std::getline(file,data))
+    while(std::getline(file,line))
     {
-        std::stringstream ss(data);
-        std::string course_information;
-        if(std::getline(ss,course_information, '\n'))
         {
             //Create a try catch, so if there is any errors, it skips and trys the next
             try
             {
-                double mark = std::stod(course_information.substr(0,4));
-                double tag = std::stod(course_information.substr(5,5));
-                double year = std::stod(course_information.substr(5,1));
-                std::string name = (course_information.substr(13));
-
-                course_mark.push_back(mark);
-                course_year.push_back(year);
-                course_module_tag.push_back(tag);           
-                course_module_name.push_back(name);
+                course_information gather_parameters;
+                gather_parameters.course_mark = std::stod(line.substr(0,4));
+                gather_parameters.course_module_tag = std::stod(line.substr(5,5));
+                gather_parameters.course_year = std::stod(line.substr(5,1));
+                gather_parameters.course_module_name = (line.substr(13));
+                
+                courses.push_back(gather_parameters);
             }catch(...){
             }
         }     
     }
-    std::cout << "Read in " << course_mark.size() << " Course marks\n";
-    std::cout << "Read in " << course_module_tag.size() << " Course module tags\n";
-    std::cout << "Read in " << course_module_name.size() << " Course module names\n"; 
-
-    for( int i = 0; i < course_mark.size(); ++i)
-    {
-        std::cout << course_module_name[i] << "\n";
-    }
-
     //State how many entries it has read, (for loops)
     //Ask the user questions?
     //Should be able to filter by course year, and by course name
-
+    std::cout << "Read in " << courses.size() << " Course records\n";
+    for(int i=0; i < courses.size(); ++i)
+    {
+        std::cout << "\nCourse Mark " << courses[i].course_mark;
+        std::cout << " Course Year " << courses[i].course_year;
+        std::cout << " Course Tag " << courses[i].course_module_tag;
+        std::cout << " Course Name " << courses[i].course_module_name;
+    }
 }
 
 int main(){
