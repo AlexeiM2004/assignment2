@@ -1,3 +1,8 @@
+// Course Marks Data
+// Loads a file containing course module information, filters sorts and displays information based on users requests and calculates statistics based on the exam result.
+// Alexei Maiorov, Student ID: [11022726]
+// Date: [07/02/2026]
+
 #include <iostream>
 #include <vector>
 #include <string>
@@ -28,9 +33,11 @@ struct exam_statistics
     double range;
 };
 
-//Declare main menu prototype function
+//Declare main menu prototype function, for later use in directing user to different functions
 
 void main_menu(const std::vector<course_information>& courses);
+void display_bulk_statistics_menu(const std::vector<course_information>& courses);
+void display_exam_statistics_menu(const std::vector<course_information>& courses);
 
 //Function to read in file, state how many entries there are, organise, write into new file
 
@@ -165,9 +172,181 @@ std::vector<course_information> sort_courses_by_year(const std::vector<course_in
 
 //----------Display functions----------//
 
-//Function to allow user to view all course information, or course information by year if selected
+void display_bulk_statistics_all(const std::vector<course_information>& courses)
+{
+    std::cout << "\nPlease state how you would all course information sorted: ";
+    std::cout << "\nOption 1 - View all course information as written from file.";
+    std::cout << "\nOption 2 - View all course information alphabetically.";
+    std::cout << "\nOption 3 - View all course information by mark (Lowest to Highest).";
+    std::cout << "\nOption 4 - View all course information by year (Lowest to Highest).";
+    std::cout << "\nPlease select an option 1-4: ";     
+    int sort_option;
+    std::cin >> sort_option;
+    while(std::cin.fail() || sort_option <= 0 || sort_option > 4 )
+    {
+        std::cout << "\nInvalid sort type input, please enter an option between 1-4: ";
+        std::cin.clear();
+        std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+        std::cin >> sort_option;
+    }
+    if(sort_option == 1)
+    {
+        for(const auto& course : courses)
+        {
+            std::cout << "\nModule name : " << course.course_module_name << " Module module tag : " << course.course_module_tag << " Module mark : " << course.course_mark;
+        }
+        std::cout << "\n";
+        display_bulk_statistics_menu(courses);
+    }else if(sort_option ==2)
+    {
+        std::vector<course_information> sorted_alphabetically = sort_courses_alphabetically(courses);
+        for(const auto& course : sorted_alphabetically)
+        {
+            std::cout << "\nModule name : " << course.course_module_name << " Module module tag : " << course.course_module_tag << " Module mark : " << course.course_mark;
+        }
+        std::cout << "\n";
+        display_bulk_statistics_menu(courses);
+    }else if(sort_option ==3)
+    {
+        std::vector<course_information> sorted_by_mark = sort_courses_by_mark(courses);
+        for(const auto& course : sorted_by_mark)
+        {
+            std::cout << "\nModule name : " << course.course_module_name << " Module module tag : " << course.course_module_tag << " Module mark : " << course.course_mark;
+        }
+        std::cout << "\n";
+        display_bulk_statistics_menu(courses);
+    }else if(sort_option == 4)
+    {
+        std::vector<course_information> sorted_by_year = sort_courses_by_year(courses);
+        for(const auto& course : sorted_by_year)
+        {
+            std::cout << "\nModule name : " << course.course_module_name << " Module module tag : " << course.course_module_tag << " Module mark : " << course.course_mark;
+        }
+        std::cout << "\n";
+        display_bulk_statistics_menu(courses);
+    }
+}
 
-void display_bulk_statistics(const std::vector<course_information>& courses)
+void display_bulk_statistics_by_year(const std::vector<course_information>& courses)
+{
+    std::cout << "\nPlease enter a course year you would like to view: ";
+    int year;
+    std::cin >> year;
+    while(std::cin.fail() || year <= 0 || year > 4 )
+    {
+        std::cout << "\nInvalid course year input, please enter a course between the years 1-4: ";
+        std::cin.clear();
+        std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+        std::cin >> year;
+    }
+    std::vector<course_information> user_selected_exam_year = exam_statistics_filter_by_year(courses, year);
+    //Uses the filtering function to filter out a year, then passes the variable back to be printed
+    std::cout << "\nIdentified " << user_selected_exam_year.size() << " courses in year " << year << "\n";
+    //Prompts the user as to how they would like their information by year sorted
+    std::cout << "\nPlease state how you would like course year [" << year << "] information sorted: ";
+    std::cout << "\nOption 1 - View course year [" << year << "] information as written from file.";
+    std::cout << "\nOption 2 - View course year [" << year << "] information alphabetically.";
+    std::cout << "\nOption 3 - View course year [" << year << "] information by mark (Lowest to Highest).";
+    std::cout << "\nPlease select an option 1-3: ";     
+    int sort_option;
+    std::cin >> sort_option;
+    while(std::cin.fail() || sort_option <= 0 || sort_option > 3 )
+    {
+        std::cout << "\nInvalid sort type input, please enter an option between 1-3: ";
+        std::cin.clear();
+        std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+        std::cin >> sort_option;
+    }
+    if(sort_option == 1)
+    {
+        for(const auto& course : user_selected_exam_year)
+        {
+            std::cout << "\nModule name : " << course.course_module_name << " Module module tag : " << course.course_module_tag << " Module mark : " << course.course_mark;
+        }
+        std::cout << "\n";
+        display_bulk_statistics_menu(courses);
+    }else if(sort_option ==2)
+    {
+        std::vector<course_information> sorted_alphabetically = sort_courses_alphabetically(user_selected_exam_year);
+        for(const auto& course : sorted_alphabetically)
+        {
+            std::cout << "\nModule name : " << course.course_module_name << " Module module tag : " << course.course_module_tag << " Module mark : " << course.course_mark;
+        }
+        std::cout << "\n";
+        display_bulk_statistics_menu(courses);
+    }else if(sort_option ==3)
+    {
+        std::vector<course_information> sorted_by_mark = sort_courses_by_mark(user_selected_exam_year);
+        for(const auto& course : sorted_by_mark)
+        {
+            std::cout << "\nModule name : " << course.course_module_name << " Module module tag : " << course.course_module_tag << " Module mark : " << course.course_mark;
+        }
+        std::cout << "\n";
+        display_bulk_statistics_menu(courses);
+    }
+}
+
+void display_bulk_statistics_mathematical(const std::vector<course_information>& courses)
+{
+    std::vector<course_information> mathematical_courses_information =  exam_statistics_filter_mathematical_courses(courses);
+    std::cout << "\nIdentified " << mathematical_courses_information.size() << " Mathematical courses. ";
+    //Prompts the user as to how they would like their information by year sorted
+    std::cout << "\nPlease state how you would the mathematical course information sorted: ";
+    std::cout << "\nOption 1 - View mathematical course information as written from file.";
+    std::cout << "\nOption 2 - View mathematical course information alphabetically.";
+    std::cout << "\nOption 3 - View mathematical course information by mark (Lowest to Highest).";
+    std::cout << "\nOption 4 - View mathematical course information by year (Lowest to Highest).";
+    std::cout << "\nPlease select an option 1-4: ";     
+    int sort_option;
+    std::cin >> sort_option;
+    while(std::cin.fail() || sort_option <= 0 || sort_option > 4 )
+    {
+        std::cout << "\nInvalid sort type input, please enter an option between 1-4: ";
+        std::cin.clear();
+        std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+        std::cin >> sort_option;
+    }
+    if(sort_option == 1)
+    {
+        for(const auto& course : mathematical_courses_information)
+        {
+            std::cout << "\nModule name : " << course.course_module_name << " Module module tag : " << course.course_module_tag << " Module mark : " << course.course_mark;
+        }
+        std::cout << "\n";
+        display_bulk_statistics_menu(courses);
+    }else if(sort_option ==2)
+    {
+        std::vector<course_information> sorted_alphabetically = sort_courses_alphabetically(mathematical_courses_information);
+        for(const auto& course : sorted_alphabetically)
+        {
+            std::cout << "\nModule name : " << course.course_module_name << " Module module tag : " << course.course_module_tag << " Module mark : " << course.course_mark;
+        }
+        std::cout << "\n";
+        display_bulk_statistics_menu(courses);
+    }else if(sort_option ==3)
+    {
+        std::vector<course_information> sorted_by_mark = sort_courses_by_mark(mathematical_courses_information);
+        for(const auto& course : sorted_by_mark)
+        {
+            std::cout << "\nModule name : " << course.course_module_name << " Module module tag : " << course.course_module_tag << " Module mark : " << course.course_mark;
+        }
+        std::cout << "\n";
+        display_bulk_statistics_menu(courses);
+    }else if(sort_option == 4)
+    {
+        std::vector<course_information> sorted_by_year = sort_courses_by_year(courses);
+        for(const auto& course : sorted_by_year)
+        {
+            std::cout << "\nModule name : " << course.course_module_name << " Module module tag : " << course.course_module_tag << " Module mark : " << course.course_mark;
+        }
+        std::cout << "\n";
+        display_bulk_statistics_menu(courses);
+    }
+}
+
+//Menu function to allow user to view the all course information function, or course information by year function if selected
+
+void display_bulk_statistics_menu(const std::vector<course_information>& courses)
 {
     std::cout << "\nThis is the view course information section. ";
     std::cout << "\nWhat would you like to do today? ";
@@ -187,181 +366,66 @@ void display_bulk_statistics(const std::vector<course_information>& courses)
     }
     if(display_bulk_statistics_option == 1)
     {
-        std::cout << "\nPlease state how you would all course information sorted: ";
-        std::cout << "\nOption 1 - View all course information as written from file.";
-        std::cout << "\nOption 2 - View all course information alphabetically.";
-        std::cout << "\nOption 3 - View all course information by mark (Lowest to Highest).";
-        std::cout << "\nOption 4 - View all course information by year (Lowest to Highest).";
-        std::cout << "\nPlease select an option 1-4: ";     
-        int sort_option;
-        std::cin >> sort_option;
-        while(std::cin.fail() || sort_option <= 0 || sort_option > 4 )
-        {
-            std::cout << "\nInvalid sort type input, please enter an option between 1-4: ";
-            std::cin.clear();
-            std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
-            std::cin >> sort_option;
-        }
-        if(sort_option == 1)
-        {
-            for(const auto& course : courses)
-            {
-                std::cout << "\nModule name : " << course.course_module_name << " Module module tag : " << course.course_module_tag << " Module mark : " << course.course_mark;
-            }
-            std::cout << "\n";
-            display_bulk_statistics(courses);
-        }else if(sort_option ==2)
-        {
-            std::vector<course_information> sorted_alphabetically = sort_courses_alphabetically(courses);
-            for(const auto& course : sorted_alphabetically)
-            {
-                std::cout << "\nModule name : " << course.course_module_name << " Module module tag : " << course.course_module_tag << " Module mark : " << course.course_mark;
-            }
-            std::cout << "\n";
-            display_bulk_statistics(courses);
-        }else if(sort_option ==3)
-        {
-            std::vector<course_information> sorted_by_mark = sort_courses_by_mark(courses);
-            for(const auto& course : sorted_by_mark)
-            {
-                std::cout << "\nModule name : " << course.course_module_name << " Module module tag : " << course.course_module_tag << " Module mark : " << course.course_mark;
-            }
-            std::cout << "\n";
-            display_bulk_statistics(courses);
-        }else if(sort_option == 4)
-        {
-            std::vector<course_information> sorted_by_year = sort_courses_by_year(courses);
-            for(const auto& course : sorted_by_year)
-            {
-                std::cout << "\nModule name : " << course.course_module_name << " Module module tag : " << course.course_module_tag << " Module mark : " << course.course_mark;
-            }
-            std::cout << "\n";
-            display_bulk_statistics(courses);
-        }
-
+        //Sends user to the view all course statistics function
+        display_bulk_statistics_all(courses);
     }else if (display_bulk_statistics_option == 2)
     {
-        std::cout << "\nPlease enter a course year you would like to view: ";
-        int year;
-        std::cin >> year;
-        while(std::cin.fail() || year <= 0 || year > 4 )
-        {
-            std::cout << "\nInvalid course year input, please enter a course between the years 1-4: ";
-            std::cin.clear();
-            std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
-            std::cin >> year;
-        }
-        std::vector<course_information> user_selected_exam_year = exam_statistics_filter_by_year(courses, year);
-        //Uses the filtering function to filter out a year, then passes the variable back to be printed
-        std::cout << "\nIdentified " << user_selected_exam_year.size() << " courses in year " << year << "\n";
-        //Prompts the user as to how they would like their information by year sorted
-        std::cout << "\nPlease state how you would like course year [" << year << "] information sorted: ";
-        std::cout << "\nOption 1 - View course year [" << year << "] information as written from file.";
-        std::cout << "\nOption 2 - View course year [" << year << "] information alphabetically.";
-        std::cout << "\nOption 3 - View course year [" << year << "] information by mark (Lowest to Highest).";
-        std::cout << "\nPlease select an option 1-3: ";     
-        int sort_option;
-        std::cin >> sort_option;
-        while(std::cin.fail() || sort_option <= 0 || sort_option > 3 )
-        {
-            std::cout << "\nInvalid sort type input, please enter an option between 1-3: ";
-            std::cin.clear();
-            std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
-            std::cin >> sort_option;
-        }
-        if(sort_option == 1)
-        {
-            for(const auto& course : user_selected_exam_year)
-            {
-                std::cout << "\nModule name : " << course.course_module_name << " Module module tag : " << course.course_module_tag << " Module mark : " << course.course_mark;
-            }
-            std::cout << "\n";
-            display_bulk_statistics(courses);
-        }else if(sort_option ==2)
-        {
-            std::vector<course_information> sorted_alphabetically = sort_courses_alphabetically(user_selected_exam_year);
-            for(const auto& course : sorted_alphabetically)
-            {
-                std::cout << "\nModule name : " << course.course_module_name << " Module module tag : " << course.course_module_tag << " Module mark : " << course.course_mark;
-            }
-            std::cout << "\n";
-            display_bulk_statistics(courses);
-        }else if(sort_option ==3)
-        {
-            std::vector<course_information> sorted_by_mark = sort_courses_by_mark(user_selected_exam_year);
-            for(const auto& course : sorted_by_mark)
-            {
-                std::cout << "\nModule name : " << course.course_module_name << " Module module tag : " << course.course_module_tag << " Module mark : " << course.course_mark;
-            }
-            std::cout << "\n";
-            display_bulk_statistics(courses);
-        }
+        //Sends user to the view course statistics by year function
+        display_bulk_statistics_by_year(courses);
     }else if (display_bulk_statistics_option == 3)
     {
-        std::vector<course_information> mathematical_courses_information =  exam_statistics_filter_mathematical_courses(courses);
-        std::cout << "\nIdentified " << mathematical_courses_information.size() << " Mathematical courses. ";
-        //Prompts the user as to how they would like their information by year sorted
-        std::cout << "\nPlease state how you would the mathematical course information sorted: ";
-        std::cout << "\nOption 1 - View mathematical course information as written from file.";
-        std::cout << "\nOption 2 - View mathematical course information alphabetically.";
-        std::cout << "\nOption 3 - View mathematical course information by mark (Lowest to Highest).";
-        std::cout << "\nOption 4 - View mathematical course information by year (Lowest to Highest).";
-        std::cout << "\nPlease select an option 1-4: ";     
-        int sort_option;
-        std::cin >> sort_option;
-        while(std::cin.fail() || sort_option <= 0 || sort_option > 4 )
-        {
-            std::cout << "\nInvalid sort type input, please enter an option between 1-4: ";
-            std::cin.clear();
-            std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
-            std::cin >> sort_option;
-        }
-        if(sort_option == 1)
-        {
-            for(const auto& course : mathematical_courses_information)
-            {
-                std::cout << "\nModule name : " << course.course_module_name << " Module module tag : " << course.course_module_tag << " Module mark : " << course.course_mark;
-            }
-            std::cout << "\n";
-            display_bulk_statistics(courses);
-        }else if(sort_option ==2)
-        {
-            std::vector<course_information> sorted_alphabetically = sort_courses_alphabetically(mathematical_courses_information);
-            for(const auto& course : sorted_alphabetically)
-            {
-                std::cout << "\nModule name : " << course.course_module_name << " Module module tag : " << course.course_module_tag << " Module mark : " << course.course_mark;
-            }
-            std::cout << "\n";
-            display_bulk_statistics(courses);
-        }else if(sort_option ==3)
-        {
-            std::vector<course_information> sorted_by_mark = sort_courses_by_mark(mathematical_courses_information);
-            for(const auto& course : sorted_by_mark)
-            {
-                std::cout << "\nModule name : " << course.course_module_name << " Module module tag : " << course.course_module_tag << " Module mark : " << course.course_mark;
-            }
-            std::cout << "\n";
-            display_bulk_statistics(courses);
-        }else if(sort_option == 4)
-        {
-            std::vector<course_information> sorted_by_year = sort_courses_by_year(courses);
-            for(const auto& course : sorted_by_year)
-            {
-                std::cout << "\nModule name : " << course.course_module_name << " Module module tag : " << course.course_module_tag << " Module mark : " << course.course_mark;
-            }
-            std::cout << "\n";
-            display_bulk_statistics(courses);
-        }
+        //Sends to the view mathematical courses function
+        display_bulk_statistics_mathematical(courses);
     }else if (display_bulk_statistics_option == 4)
     {
-        //Sends the user back to the main menu function
+        //Sends user back to the main menu function
         main_menu(courses);
     }
 }
 
-//Function to allow user to view all exam statistics, or exam statistics by year if selected
+void display_all_exam_statistics(const std::vector<course_information>& courses)
+{ 
+    exam_statistics calculated_statistical_results = exam_statistics_calculator(courses);
+    std::cout << "\nIdentified a total of [" << calculated_statistical_results.course_sample_size << "] overall.";
+    std::cout << "\nOverall exam statistics were;";
+    std::cout << "\nMean = " << calculated_statistical_results.mean;
+    std::cout << "\nStandard Deviation = " << calculated_statistical_results.standard_deviation;
+    std::cout << "\nStandard error = " << calculated_statistical_results.standard_error;
+    std::cout << "\nRange = " << calculated_statistical_results.range;
+    std::cout << "\n";
+    std::cout << "\n";
+    display_exam_statistics_menu(courses);
+}
 
-void display_exam_statistics(const std::vector<course_information>& courses)
+void display_exam_statistics_by_year(const std::vector<course_information>& courses)
+{
+    std::cout << "\nPlease enter a course year you would like to view 1-4: ";
+    int year;
+    std::cin >> year;
+    while(std::cin.fail() || year <= 0 || year > 4 )
+    {
+        std::cout << "\nInvalid course year input, please enter a course between the years 1-4: ";
+        std::cin.clear();
+        std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+        std::cin >> year;
+    }
+    std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+    std::vector<course_information> user_selected_exam_year = exam_statistics_filter_by_year(courses, year);
+    //Uses the filtering function to filter out a year, then passes the variable back to be printed
+    std::cout << "\nIdentified " << user_selected_exam_year.size() << " courses in year " << year << "\n";
+    exam_statistics calculated_statistical_results = exam_statistics_calculator(user_selected_exam_year);
+    std::cout << "\nStatistics for exam year [" << year << "] were;";
+    std::cout << "\nMean = " << calculated_statistical_results.mean;
+    std::cout << "\nStandard Deviation = " << calculated_statistical_results.standard_deviation;
+    std::cout << "\nStandard error = " << calculated_statistical_results.standard_error;
+    std::cout << "\nRange = " << calculated_statistical_results.range;
+    std::cout << "\n";
+    display_exam_statistics_menu(courses);
+}
+
+//Menu function to allow user to view the all exam statistics function, or exam statistics by year function if selected
+
+void display_exam_statistics_menu(const std::vector<course_information>& courses)
 {
     std::cout << "\nView exam statistics section. ";
     std::cout << "\nWhat would you like to do today? ";
@@ -371,7 +435,7 @@ void display_exam_statistics(const std::vector<course_information>& courses)
     std::cout << "\nPlease select an option 1-3: ";
     int exam_statistics_menu_option = 0;
     std::cin >> exam_statistics_menu_option;
-    while(std::cin.fail() || exam_statistics_menu_option <= 0 || exam_statistics_menu_option > 4)
+    while(std::cin.fail() || exam_statistics_menu_option <= 0 || exam_statistics_menu_option > 3)
     {
         std::cout << "\nYou have entered an invalid input, please select an option 1-3;";
         std::cin.clear();
@@ -381,40 +445,10 @@ void display_exam_statistics(const std::vector<course_information>& courses)
     std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
     if(exam_statistics_menu_option == 1)
     {
-        exam_statistics calculated_statistical_results = exam_statistics_calculator(courses);
-        std::cout << "\nIdentified a total of [" << calculated_statistical_results.course_sample_size << "] overall.";
-        std::cout << "\nOverall exam statistics were;";
-        std::cout << "\nMean = " << calculated_statistical_results.mean;
-        std::cout << "\nStandard Deviation = " << calculated_statistical_results.standard_deviation;
-        std::cout << "\nStandard error = " << calculated_statistical_results.standard_error;
-        std::cout << "\nRange = " << calculated_statistical_results.range;
-        std::cout << "\n";
-        std::cout << "\n";
-        display_exam_statistics(courses);
+        display_all_exam_statistics(courses);
     }else if (exam_statistics_menu_option == 2)
     {
-        std::cout << "\nPlease enter a course year you would like to view 1-4: ";
-        int year;
-        std::cin >> year;
-        while(std::cin.fail() || year <= 0 || year > 4 )
-        {
-            std::cout << "\nInvalid course year input, please enter a course between the years 1-4: ";
-            std::cin.clear();
-            std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
-            std::cin >> year;
-        }
-        std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
-        std::vector<course_information> user_selected_exam_year = exam_statistics_filter_by_year(courses, year);
-        //Uses the filtering function to filter out a year, then passes the variable back to be printed
-        std::cout << "\nIdentified " << user_selected_exam_year.size() << " courses in year " << year << "\n";
-        exam_statistics calculated_statistical_results = exam_statistics_calculator(user_selected_exam_year);
-        std::cout << "\nStatistics for exam year [" << year << "] were;";
-        std::cout << "\nMean = " << calculated_statistical_results.mean;
-        std::cout << "\nStandard Deviation = " << calculated_statistical_results.standard_deviation;
-        std::cout << "\nStandard error = " << calculated_statistical_results.standard_error;
-        std::cout << "\nRange = " << calculated_statistical_results.range;
-        std::cout << "\n";
-        display_exam_statistics(courses);
+        display_exam_statistics_by_year(courses);
     }else if (exam_statistics_menu_option == 3)
     {
         //Sends the user back to the main menu function
@@ -444,10 +478,10 @@ void main_menu(const std::vector<course_information>& courses)
     std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
     if(main_menu_option == 1)
     {
-        display_bulk_statistics(courses);
+        display_bulk_statistics_menu(courses);
     }else if (main_menu_option == 2)
     {
-        display_exam_statistics(courses);
+        display_exam_statistics_menu(courses);
     }else if (main_menu_option == 3)
     {
         std::cout << "\nThank you for using this program, have a lovely day.";
@@ -459,8 +493,5 @@ void main_menu(const std::vector<course_information>& courses)
 int main(){
     std::vector<course_information> courses = load_exam_statistics();
     main_menu(courses);
-    //exam_statistics_calculator(courses);
-    //user_interface(courses);
-
     return 0;
 }
