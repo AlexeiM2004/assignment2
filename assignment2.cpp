@@ -38,6 +38,7 @@ struct exam_statistics
 void main_menu(const std::vector<course_information>& courses);
 void display_bulk_statistics_menu(const std::vector<course_information>& courses);
 void display_exam_statistics_menu(const std::vector<course_information>& courses);
+void escape();
 
 //Function to read in file, state how many entries there are, organise, write into new file
 
@@ -55,7 +56,7 @@ std::vector<course_information> load_exam_statistics()
     while(std::getline(file,line))
     {
         {
-            //Create a try catch, so if there is any errors, it skips and trys the next
+            //Try catch setup, if a line in the file generates an error, it skips and moves onto the next line.
             try
             {
                 course_information gather_parameters;
@@ -70,6 +71,9 @@ std::vector<course_information> load_exam_statistics()
         }     
     }
     std::cout << "Successfully read in " << courses.size() << " exam records\n";
+    //Closes the file once the information has been read off
+    file.close();
+
     return courses;
 }
 
@@ -295,7 +299,7 @@ void display_bulk_statistics_mathematical(const std::vector<course_information>&
     std::cout << "\nOption 1 - View mathematical course information as written from file.";
     std::cout << "\nOption 2 - View mathematical course information alphabetically.";
     std::cout << "\nOption 3 - View mathematical course information by mark (Lowest to Highest).";
-    std::cout << "\nOption 4 - View mathematical course information by year (Lowest to Highest).";
+    std::cout << "\nOption 4 - View mathematical course information by year (Highest to Lowest).";
     std::cout << "\nPlease select an option 1-4: ";     
     int sort_option;
     std::cin >> sort_option;
@@ -334,7 +338,7 @@ void display_bulk_statistics_mathematical(const std::vector<course_information>&
         display_bulk_statistics_menu(courses);
     }else if(sort_option == 4)
     {
-        std::vector<course_information> sorted_by_year = sort_courses_by_year(courses);
+        std::vector<course_information> sorted_by_year = sort_courses_by_year(mathematical_courses_information);
         for(const auto& course : sorted_by_year)
         {
             std::cout << "\nModule name : " << course.course_module_name << " Module module tag : " << course.course_module_tag << " Module mark : " << course.course_mark;
@@ -484,7 +488,7 @@ void main_menu(const std::vector<course_information>& courses)
         display_exam_statistics_menu(courses);
     }else if (main_menu_option == 3)
     {
-        std::cout << "\nThank you for using this program, have a lovely day.";
+    std::cout << "\nThank you for using this program, have a lovely day.";
     }
 }
 
@@ -492,6 +496,12 @@ void main_menu(const std::vector<course_information>& courses)
 
 int main(){
     std::vector<course_information> courses = load_exam_statistics();
+    //If no information is detected in the file or no file is detected, the program will exit gracefully
+    if(courses.empty())
+    {
+        std::cout << "Please load file information in correctly and try again.";
+        return 1;
+    }
     main_menu(courses);
     return 0;
 }
