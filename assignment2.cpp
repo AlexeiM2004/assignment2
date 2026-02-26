@@ -46,7 +46,7 @@ std::vector<course_information> load_exam_statistics()
 {
     //Read in a file and create arrays containing the file's parameters
 
-    std::ifstream file("C:\\Users\\lexma\\projects\\assignment2\\course_marks.dat");
+    std::ifstream file("course_marks.dat");
     std::string line;
 
     std::vector<course_information> courses;
