@@ -2,7 +2,7 @@
 
 ## Program Brief
 
-Progrm processes and analyses course mark data from the file "course_marks.dat". Providing a menu interface allowing the user to;
+Program processes and analyses the course mark data from the file "course_marks.dat". Providing a menu interface allowing the user to;
 
 - Load module information containing; mark, module tag, year and module name.
 - View bulk course data with various sorting options; alphabetically, by year, by mark.
@@ -49,7 +49,7 @@ The code is split into 6 sections;
 
 ## Decleration of AI usage
 
-AI tools were utilized in the coding process to;
+AI tools were utilized in this coding process to;
 - Debug and provide solutions to code errors.
 - Provide feedback to code quality, and suggestions for improvement.
 
