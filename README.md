@@ -4,17 +4,17 @@
 
 Progrm processes and analyses course mark data from the file "course_marks.dat". Providing a menu interface allowing the user to;
 
--Load module information containing; mark, module tag, year and module name.
--View bulk course data with various sorting options; alphabetically, by year, by mark.
--Filter and display mathematical (M) courses.
--Compute and display statistics such as mean, standard deviation, and range.
--Filter and display courses by year (1-4).
--Handle file input errors gracefully by skipping error lines or closing if no input file is detected.
+- Load module information containing; mark, module tag, year and module name.
+- View bulk course data with various sorting options; alphabetically, by year, by mark.
+- Filter and display mathematical (M) courses.
+- Compute and display statistics such as mean, standard deviation, and range.
+- Filter and display courses by year (1-4).
+- Handle file input errors gracefully by skipping error lines or closing if no input file is detected.
 
 ## Compilcation code
 
-g++-11 assignment2.cpp -o assignment-2.o -std=gnu++17
-Note: ensure the "course_marks.dat" file is in the same directory as the created executable.
+- g++-11 assignment2.cpp -o assignment-2.o -std=gnu++17
+- Note: ensure the "course_marks.dat" file is in the same directory as the created executable.
 
 ## Program Structure
 
