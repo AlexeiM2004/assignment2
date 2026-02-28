@@ -22,7 +22,7 @@ struct course_information
     std::string course_module_name;
 };
 
-//Structure to contain the calculated exam statistic's parameters
+//Structure to contain the calculated exam statistic parameters
 
 struct exam_statistics
 {
@@ -38,7 +38,6 @@ struct exam_statistics
 void main_menu(const std::vector<course_information>& courses);
 void display_bulk_statistics_menu(const std::vector<course_information>& courses);
 void display_exam_statistics_menu(const std::vector<course_information>& courses);
-void escape();
 
 //Function to read in file, state how many entries there are, organise, write into new file
 
